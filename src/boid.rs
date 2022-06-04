@@ -3,14 +3,19 @@ use rand::Rng;
 
 use crate::{SPRITE_SCALE, GameTextures, WinSize, compontents::{Velocity, ID}, BoidSettings};
 
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(SystemLabel)]
+enum BoidSystemLabels {
+    UpdatingVelocity,
+}
 pub struct BoidPlugin;
 
 impl Plugin for BoidPlugin {
     fn build(&self, app: &mut App) {
         app
             .add_startup_system_to_stage(StartupStage::PostStartup, boid_spawn_system)
-            .add_system(boid_movement_system)
-            .add_system(boid_cohesion_system);
+            .add_system(boid_movement_system.after(BoidSystemLabels::UpdatingVelocity))
+            .add_system(boid_cohesion_system.label(BoidSystemLabels::UpdatingVelocity));
     }
 }
 
@@ -47,10 +52,16 @@ fn boid_spawn_system(
     }
 }
 
-fn boid_movement_system(mut query: Query<(&mut Transform, &Velocity)>, win_size: Res<WinSize>) {
+fn boid_movement_system(mut query: Query<(&mut Transform, &mut Velocity, &ID)>, win_size: Res<WinSize>, boid_settings: Res<BoidSettings>) {
 
-    for (mut transform, velocity) in query.iter_mut() {
+    for (mut transform, mut velocity, id) in query.iter_mut() {
         
+        if velocity.length_squared() > boid_settings.boid_max_speed * boid_settings.boid_max_speed  {
+            let velocity_vec = velocity.normalize() * boid_settings.boid_max_speed;
+            velocity.x = velocity_vec.x;
+            velocity.y = velocity_vec.y;
+        }
+
         // Change boid position by velocity
         let translation = &mut transform.translation;
         translation.x += velocity.x;
@@ -66,17 +77,17 @@ fn boid_movement_system(mut query: Query<(&mut Transform, &Velocity)>, win_size:
     }
 }
 
-fn boid_cohesion_system(transform_query: Query<&Transform>, mut velocity_query: Query<(&mut Velocity, &Transform)>, boid_settings: Res<BoidSettings>) {
+fn boid_cohesion_system(transform_query: Query<(&Transform, &ID)>, mut velocity_query: Query<(&mut Velocity, &Transform, &ID)>, boid_settings: Res<BoidSettings>) {
     
     // Loop through all boids and get their position and velocity
-    for (mut velocity, first_position) in velocity_query.iter_mut() {
+    for (mut velocity, first_position, id) in velocity_query.iter_mut() {
         let mut center_of_mass = Vec2::new(0., 0.);
         let mut count = 0;
         let first_position = first_position.translation;
         let first_boid_position = Vec2::new(first_position.x, first_position.y);
 
         // Go through all boids again and get their position
-        for second_position in transform_query.iter() {
+        for (second_position, second_id) in transform_query.iter() {
             let second_position = second_position.translation;
             let second_boid_position = Vec2::new(second_position.x, second_position.y);
 
@@ -84,7 +95,7 @@ fn boid_cohesion_system(transform_query: Query<&Transform>, mut velocity_query: 
             let distance_sqrd = (first_boid_position - second_boid_position).length_squared();
 
             //  If the boids are within view distance and are not occupying the same space add to the center of mass
-            if distance_sqrd < boid_settings.boid_view_distance_sqrd && distance_sqrd != 0.0 {
+            if distance_sqrd < boid_settings.boid_view_distance_sqrd && id != second_id {
                 center_of_mass += second_boid_position;
                 count += 1;
             }
@@ -98,8 +109,7 @@ fn boid_cohesion_system(transform_query: Query<&Transform>, mut velocity_query: 
         // Find the new velocity for the first boid
         center_of_mass /= count as f32;
 
-        let new_velocity = (first_boid_position - center_of_mass).normalize() * boid_settings.boid_max_speed;
-        let new_velocity = Vec2::new(velocity.x, velocity.y).lerp(new_velocity, 0.01);
+        let new_velocity = (first_boid_position - center_of_mass) / 100.;
         
         velocity.x = new_velocity.x;
         velocity.y = new_velocity.y;
