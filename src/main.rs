@@ -1,4 +1,4 @@
-use bevy::prelude::*;
+use bevy::{prelude::*, ecs::event::Events, window::WindowResized};
 use boid_plugin::BoidPlugin;
 
 mod boid_plugin;
@@ -48,6 +48,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(BoidPlugin)
         .add_startup_system(setup_system)
+        .add_system(window_resize_system)
         .run();
 }
 
@@ -84,4 +85,12 @@ fn setup_system(
     };
     commands.insert_resource(boid_settings);
 
+}
+
+fn window_resize_system(resize_event: Res<Events<WindowResized>>, mut win_size: ResMut<WinSize>) {
+    let mut reader = resize_event.get_reader();
+    for e in reader.iter(&resize_event) {
+        win_size.w = e.width;
+        win_size.h = e.height;
+    }
 }
