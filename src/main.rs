@@ -1,16 +1,15 @@
-//#![allow(dead_code)]
-
 use bevy::prelude::*;
-use boid::BoidPlugin;
+use boid_plugin::BoidPlugin;
 
-mod boid;
+mod boid_plugin;
+mod boid_logic;
 mod compontents;
 
 // region:      Asset Constants
 
     const BOID_SPRITE: &str = "arrow.png";
 
-    const SPRITE_SCALE: f32 = 0.1;
+    const SPRITE_SCALE: f32 = 0.075;
 
 // endregion:   Asset Constants
 
@@ -26,19 +25,24 @@ struct GameTextures {
 }
 
 pub struct BoidSettings {
+    pub margin: f32,
     pub boid_view_distance_sqrd: f32,
     pub boid_max_speed: f32,
+    pub cohesion_multiplier: f32,
+    pub min_distance: f32,
+    pub separation_multiplier: f32,
+    pub alignment_multiplier: f32,
 }
 
 // endregion:   Resources
 
 fn main() {
     App::new()
-        .insert_resource(ClearColor(Color::rgb(0., 0., 0.)))
+        .insert_resource(ClearColor(Color::rgb(0.04, 0.04, 0.04)))
         .insert_resource(WindowDescriptor {
             title: String::from("Nishant's Boids"),
-            width: 600.,
-            height: 600.,
+            width: 1200.,
+            height: 800.,
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
@@ -70,8 +74,13 @@ fn setup_system(
 
     // Add BoidSettings resource
     let boid_settings = BoidSettings {
-        boid_view_distance_sqrd: 10000.0,
-        boid_max_speed: 3.0
+        margin: 10.0,
+        boid_view_distance_sqrd: 500.0,
+        boid_max_speed: 2.0,
+        cohesion_multiplier: 0.007,
+        min_distance: 2.0,
+        separation_multiplier: 0.02,
+        alignment_multiplier: 0.1,
     };
     commands.insert_resource(boid_settings);
 
