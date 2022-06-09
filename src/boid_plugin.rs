@@ -47,7 +47,7 @@ fn boid_spawn_system(
                 texture: game_textures.player.clone(),
                 transform: Transform {
                     translation: Vec3::new(x_pos, y_pos, 10.),
-                    scale: Vec3::new(SPRITE_SCALE, SPRITE_SCALE, 1.),
+                    scale: Vec3::new(SPRITE_SCALE, SPRITE_SCALE/1.2, 1.),
                     ..Default::default()
                 },
                 ..Default::default()
@@ -71,10 +71,10 @@ fn boid_update_system(mut query: Query<(&mut Boid, &mut Transform)>, boids: Res<
         // If the margin is greater than zero, boids bounce off walls
         // otherwise they teleport to other side of screen
         if settings.margin > 0.0 {
-            if boid.x < -win_size.w / 2.0 + settings.margin {boid.dx += 1.0}
-            else if boid.x > win_size.w / 2.0 - settings.margin {boid.dx -= 1.0}
-            if boid.y < -win_size.h / 2.0 + settings.margin {boid.dy += 1.0}
-            else if boid.y > win_size.h / 2.0 - settings.margin {boid.dy -= 1.0}
+            if boid.x < -win_size.w / 2.0 + settings.margin {boid.dx += 0.1}
+            else if boid.x > win_size.w / 2.0 - settings.margin {boid.dx -= 0.1}
+            if boid.y < -win_size.h / 2.0 + settings.margin {boid.dy += 0.1}
+            else if boid.y > win_size.h / 2.0 - settings.margin {boid.dy -= 0.1}
         } else {
             if boid.x < -win_size.w / 2.0 {boid.x += win_size.w}
             else if boid.x > win_size.w / 2.0 {boid.x -= win_size.w}

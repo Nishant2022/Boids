@@ -43,7 +43,7 @@ fn main() {
         .insert_resource(ClearColor(Color::rgb(0.04, 0.04, 0.04)))
         .insert_resource(WindowDescriptor {
             title: String::from("Nishant's Boids"),
-            width: 1200.,
+            width: 800.,
             height: 800.,
             ..Default::default()
         })
@@ -78,12 +78,12 @@ fn setup_system(
 
     // Add BoidSettings resource
     let boid_settings = BoidSettings {
-        margin: 10.0,
-        boid_view_distance_sqrd: 500.0,
-        boid_max_speed: 2.0,
+        margin: 150.0,
+        boid_view_distance_sqrd: 250.0,
+        boid_max_speed: 2.5,
         cohesion_multiplier: 0.007,
         min_distance: 2.0,
-        separation_multiplier: 0.02,
+        separation_multiplier: 0.025,
         alignment_multiplier: 0.1,
     };
     commands.insert_resource(boid_settings);
@@ -91,6 +91,8 @@ fn setup_system(
 }
 
 fn window_resize_system(resize_event: Res<Events<WindowResized>>, mut win_size: ResMut<WinSize>) {
+    
+    // Checks for resize event and updates win_size resource
     let mut reader = resize_event.get_reader();
     for e in reader.iter(&resize_event) {
         win_size.w = e.width;
