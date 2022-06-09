@@ -7,4 +7,7 @@ pub struct ID {
     pub id: u32,
 }
 
+#[derive(Component)]
+pub struct TextComponent;
+
 // endregion:   Common Components 

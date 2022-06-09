@@ -1,9 +1,11 @@
 use bevy::{prelude::*, ecs::event::Events, window::WindowResized};
 use boid_plugin::BoidPlugin;
+use text::TextPlugin;
 
 mod boid_plugin;
 mod boid_logic;
 mod compontents;
+mod text;
 
 // region:      Asset Constants
 
@@ -48,6 +50,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugin(BoidPlugin)
         .add_startup_system(setup_system)
+        .add_plugin(TextPlugin)
         .add_system(window_resize_system)
         .run();
 }
