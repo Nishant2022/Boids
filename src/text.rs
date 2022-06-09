@@ -9,6 +9,7 @@ impl Plugin for TextPlugin {
     }
 }
 
+// Create Nishant's Boids text
 fn setup_text_system(mut commands: Commands, asset_server: Res<AssetServer>) {    
     commands.spawn_bundle(UiCameraBundle::default());
     commands
@@ -23,16 +24,13 @@ fn setup_text_system(mut commands: Commands, asset_server: Res<AssetServer>) {
                 },
                 ..default()
             },
-            // Use the `Text::with_section` constructor
             text: Text::with_section(
-                // Accepts a `String` or any type that converts into a `String`, such as `&str`
                 "Nishant's\nBoids",
                 TextStyle {
                     font: asset_server.load("fonts/Roboto-Medium.ttf"),
                     font_size: 50.0,
-                    color: Color::rgba(0.5, 0.5, 0.5, 0.1),
+                    color: Color::rgba(0.5, 0.5, 0.5, 0.3),
                 },
-                // Note: You can use `Default::default()` in place of the `TextAlignment`
                 TextAlignment {
                     horizontal: HorizontalAlign::Center,
                     ..default()
