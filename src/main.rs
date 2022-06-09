@@ -9,7 +9,7 @@ mod text;
 
 // region:      Asset Constants
 
-    const BOID_SPRITE: &str = "arrow.png";
+    const BOID_SPRITE: &str = "images/arrow.png";
 
     const SPRITE_SCALE: f32 = 0.075;
 
@@ -43,8 +43,8 @@ fn main() {
         .insert_resource(ClearColor(Color::rgb(0.04, 0.04, 0.04)))
         .insert_resource(WindowDescriptor {
             title: String::from("Nishant's Boids"),
-            width: 800.,
-            height: 800.,
+            width: 1280.,
+            height: 720.,
             ..Default::default()
         })
         .add_plugins(DefaultPlugins)
