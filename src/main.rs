@@ -82,8 +82,8 @@ fn setup_system(
         boid_view_distance_sqrd: 250.0,
         boid_max_speed: 2.5,
         cohesion_multiplier: 0.007,
-        min_distance: 2.0,
-        separation_multiplier: 0.025,
+        min_distance: 10.0,
+        separation_multiplier: 0.05,
         alignment_multiplier: 0.1,
     };
     commands.insert_resource(boid_settings);
