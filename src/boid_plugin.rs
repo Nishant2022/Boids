@@ -14,6 +14,12 @@ impl Plugin for BoidPlugin {
             .add_startup_system_to_stage(StartupStage::PostStartup, boid_spawn_system)
             .add_system(boid_update_system)
             .add_system(boid_update_group_system.after(boid_update_system));
+        
+        #[cfg(target_arch = "wasm32")]
+        {
+            app.add_plugin(bevy_web_resizer::Plugin);
+        }
+    
     }
 }
 
@@ -23,7 +29,7 @@ fn boid_spawn_system(
     win_size: Res<WinSize>,
 ) {
     let mut boid_vec: BoidGroup = BoidGroup{ boids: Vec::new() };
-    for i in 0..200 {
+    for i in 0..100 {
         
         // Get position
     
@@ -71,10 +77,10 @@ fn boid_update_system(mut query: Query<(&mut Boid, &mut Transform)>, boids: Res<
         // If the margin is greater than zero, boids bounce off walls
         // otherwise they teleport to other side of screen
         if settings.margin > 0.0 {
-            if boid.x < -win_size.w / 2.0 + settings.margin {boid.dx += 0.1}
-            else if boid.x > win_size.w / 2.0 - settings.margin {boid.dx -= 0.1}
-            if boid.y < -win_size.h / 2.0 + settings.margin {boid.dy += 0.1}
-            else if boid.y > win_size.h / 2.0 - settings.margin {boid.dy -= 0.1}
+            if boid.x < -win_size.w / 2.0 + settings.margin {boid.dx += 0.5}
+            else if boid.x > win_size.w / 2.0 - settings.margin {boid.dx -= 0.5}
+            if boid.y < -win_size.h / 2.0 + settings.margin {boid.dy += 0.5}
+            else if boid.y > win_size.h / 2.0 - settings.margin {boid.dy -= 0.5}
         } else {
             if boid.x < -win_size.w / 2.0 {boid.x += win_size.w}
             else if boid.x > win_size.w / 2.0 {boid.x -= win_size.w}

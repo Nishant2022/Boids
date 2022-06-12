@@ -78,7 +78,7 @@ fn setup_system(
 
     // Add BoidSettings resource
     let boid_settings = BoidSettings {
-        margin: 150.0,
+        margin: 50.0,
         boid_view_distance_sqrd: 250.0,
         boid_max_speed: 2.5,
         cohesion_multiplier: 0.007,
