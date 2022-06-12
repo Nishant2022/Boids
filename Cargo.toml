@@ -9,3 +9,7 @@ edition = "2021"
 bevy = "0.7"
 rand = "0.8.3"
 bevy-web-resizer = "2.0.0"
+
+[profile.release]
+lto = true
+opt-level = 'z'
