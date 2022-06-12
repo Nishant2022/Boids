@@ -16,3 +16,20 @@ Boids meant to simulate and model flocking behaviors like birds and fish. There 
 1. Alignment: Boids move in the average direction of neighboring boids.
 
 Using these three behaviors, we are able to simulate flocking behavior.
+
+## Build
+
+If you have cargo install you can run:
+
+```
+cargo build
+cargo run
+```
+
+To build for web run:
+```
+rustup target add wasm32-unknown-unknown
+cargo install wasm-bindgen-cli
+cargo build --release --target wasm32-unknown-unknown
+wasm-bindgen --out-name boids --out-dir wasm --target web target/wasm32-unknown-unknown/release/boids.wasm
+```
